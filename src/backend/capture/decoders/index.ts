@@ -2,14 +2,17 @@ import type { SignalType } from '@backend/types'
 import { logger } from '../../utils/logger'
 import { getAllDecoders, getDecoder, hasDecoder, registerDecoder } from './registry'
 import { sstvDecoder } from './sstv-decoder'
-import type { DecoderResult } from './types'
+import { telemetryDecoder } from './telemetry-decoder'
+import type { DecodeOptions, DecoderResult } from './types'
 
 registerDecoder(sstvDecoder)
+registerDecoder(telemetryDecoder)
 
 export const decodeRecording = async (
   wavPath: string,
   outputDir: string,
-  signalType: SignalType = 'sstv'
+  signalType: SignalType = 'sstv',
+  options?: DecodeOptions
 ): Promise<DecoderResult | null> => {
   const decoder = getDecoder(signalType)
 
@@ -19,7 +22,7 @@ export const decodeRecording = async (
   decoderNotFound && logger.error(`No decoder registered for signal type: ${signalType}`)
   decoder && !decoderInstalled && logger.error(`Decoder "${decoder.name}" is not installed`)
 
-  return decoder && decoderInstalled ? decoder.decode(wavPath, outputDir) : null
+  return decoder && decoderInstalled ? decoder.decode(wavPath, outputDir, options) : null
 }
 
 export const checkDecoderInstalled = async (signalType: SignalType): Promise<boolean> => {

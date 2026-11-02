@@ -199,7 +199,8 @@ export async function capturePass(
     const decoderResult = await decodeRecording(
       recordingPath,
       config.recording.imagesDir,
-      satellite.signalType
+      satellite.signalType,
+      { satellite }
     )
     const imagePaths = decoderResult?.outputPaths ?? []
 

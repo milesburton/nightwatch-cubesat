@@ -18,8 +18,10 @@ vi.mock('@backend/utils/logger', () => ({
 
 describe('decoder registry', () => {
   describe('getDecoder', () => {
-    it('should have no decoder yet for telemetry', () => {
-      expect(getDecoder('telemetry')).toBeUndefined()
+    it('should return the gr-satellites decoder for telemetry', () => {
+      const decoder = getDecoder('telemetry')
+      expect(decoder?.name).toBe('Telemetry Decoder (gr-satellites)')
+      expect(decoder?.signalType).toBe('telemetry')
     })
 
     it('should return SSTV decoder for sstv signal type', () => {
@@ -33,14 +35,14 @@ describe('decoder registry', () => {
   describe('hasDecoder', () => {
     it('should return true for registered decoders', () => {
       expect(hasDecoder('sstv')).toBe(true)
-      expect(hasDecoder('telemetry')).toBe(false)
+      expect(hasDecoder('telemetry')).toBe(true)
     })
   })
 
   describe('getAllDecoders', () => {
     it('should return all registered decoders', () => {
       const decoders = getAllDecoders()
-      expect(decoders.map((d) => d.signalType)).toEqual(['sstv'])
+      expect(decoders.map((d) => d.signalType).sort()).toEqual(['sstv', 'telemetry'])
     })
   })
 
@@ -112,7 +114,7 @@ describe('decoder registry', () => {
         const result = await decodeRecording('/test.wav', '/output', 'sstv')
 
         expect(result).toBeDefined()
-        expect(decoder.decode).toHaveBeenCalledWith('/test.wav', '/output')
+        expect(decoder.decode).toHaveBeenCalledWith('/test.wav', '/output', undefined)
 
         // Restore
         decoder.checkInstalled = originalCheck
