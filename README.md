@@ -121,8 +121,8 @@ belongs to, and external commands are injected or mocked so tests need no radio.
 
 ## Documentation
 
-`docs/` is **inherited from night-watch and still describes weather-satellite capture**. It is being
-replaced. Treat this README as the source of truth until then.
+See [docs/](docs/README.md): scheduling and decoding, deployment, the API and every setting.
+Details of the Pi it runs on (address, Wi-Fi, SDR, recovery) are in the homelab-docs site.
 
 ## Licence and credits
 
