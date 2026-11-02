@@ -23,9 +23,10 @@ scripts/build-arm64-for-pi.sh user@pi --app-only
 It builds under emulation (the first base build compiles gr-satellites and is slow), saves the
 image, copies it with `rsync --partial` so a dropped link resumes, and runs `docker load` on the Pi.
 
-Alternatively `.github/workflows/docker-build.yml` builds and pushes to ghcr.io on every push to
-`main`. The repository is private, so the Pi then needs `docker login ghcr.io` with a token that has
-`read:packages`.
+`.github/workflows/docker-build.yml` can build and push to ghcr.io, but it is **manual only** while
+the repository is private (the arm64 base compiles gr-satellites under emulation and costs Actions
+minutes). Restore its `push` trigger when the project goes public. A private ghcr image also needs
+`docker login ghcr.io` on the Pi with a token that has `read:packages`.
 
 ## Running
 

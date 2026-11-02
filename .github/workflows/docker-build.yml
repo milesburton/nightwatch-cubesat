@@ -1,10 +1,9 @@
 name: Docker Build and Push
 
+# Manual only while the repository is private: the arm64 base image compiles gr-satellites under
+# QEMU, which is slow and costs Actions minutes, and images are built locally with
+# scripts/build-arm64-for-pi.sh. Restore the push trigger (main) when the project goes public.
 on:
-  push:
-    branches:
-      - main
-      - master
   workflow_dispatch:
 
 env:
