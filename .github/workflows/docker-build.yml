@@ -9,8 +9,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  BASE_IMAGE_NAME: milesburton/night-watch-base
-  APP_IMAGE_NAME: milesburton/night-watch
+  BASE_IMAGE_NAME: milesburton/nightwatch-cubesat-base
+  APP_IMAGE_NAME: milesburton/nightwatch-cubesat
 
 jobs:
   check-base-changes:
