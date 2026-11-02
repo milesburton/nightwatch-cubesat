@@ -13,6 +13,31 @@ interface TleCache {
   satellites: TwoLineElement[]
 }
 
+/** NORAD catalogue number from line 1 of a TLE, or null if it is malformed. */
+export const tleNoradId = (tle: TwoLineElement): number | null => {
+  const match = tle.line1.match(/^1\s+(\d+)/)
+  return match?.[1] ? Number.parseInt(match[1], 10) : null
+}
+
+/** The TLE for a satellite: NORAD id first, then name, so similar names cannot cross over. */
+export const findTle = (
+  tles: readonly TwoLineElement[],
+  sat: Pick<SatelliteInfo, 'name' | 'noradId'>
+): TwoLineElement | undefined => {
+  const squash = (name: string) => name.toLowerCase().replace(/\s+/g, '')
+  const satName = squash(sat.name)
+
+  return (
+    tles.find((t) => tleNoradId(t) === sat.noradId) ??
+    tles.find((t) => squash(t.name) === satName) ??
+    // Catalogue name variations such as FUNCUBE-1 vs FUNcube-1 (AO-73)
+    tles.find((t) => {
+      const tleName = squash(t.name)
+      return tleName.includes(satName.slice(0, 8)) || satName.includes(tleName.slice(0, 8))
+    })
+  )
+}
+
 const parseTleText = (text: string, expectedName: string): TwoLineElement | null => {
   const lines = text
     .trim()
@@ -91,14 +116,16 @@ export async function getTles(
   satellites: SatelliteInfo[],
   maxAgeHours: number
 ): Promise<TwoLineElement[]> {
+  const wanted = [...new Map(satellites.map((s) => [s.noradId, s])).values()]
   const cached = await loadCachedTles(maxAgeHours)
-  const cacheIsValid = cached !== null && cached.length === satellites.length
+  const cachedIds = new Set((cached ?? []).map(tleNoradId))
+  const cacheIsValid = cached !== null && wanted.every((s) => cachedIds.has(s.noradId))
 
   const fresh = cacheIsValid
     ? []
     : await (async () => {
         logger.info('Fetching fresh TLE data from CelesTrak...')
-        return fetchAllTles(satellites)
+        return fetchAllTles(wanted)
       })()
 
   const hasFresh = fresh.length > 0

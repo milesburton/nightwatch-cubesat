@@ -22,3 +22,6 @@ export {
   predictPassesWithDoppler,
 } from './passes'
 export type { PredictionOptions } from './passes'
+
+export { rankPasses, scorePass, selectPasses } from './ranking'
+export type { ScoredPass } from './ranking'

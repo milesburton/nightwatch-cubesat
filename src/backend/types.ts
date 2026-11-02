@@ -23,6 +23,10 @@ export interface SatelliteInfo {
   signalConfig: SignalConfig
   enabled: boolean
   eventBased?: boolean
+  /** SatNOGS transmitter this target was built from, when it came from the candidate list. */
+  transmitterId?: string
+  /** 0..1 likelihood that the satellite is on air, from recent SatNOGS observations. */
+  weight?: number
 }
 
 export interface TwoLineElement {

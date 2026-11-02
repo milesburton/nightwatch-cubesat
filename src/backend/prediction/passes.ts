@@ -6,6 +6,7 @@ import type {
   SatellitePosition,
   TwoLineElement,
 } from '@backend/types'
+import { findTle } from '../satellites/tle'
 import { logger } from '../utils/logger'
 import { calculateDopplerShift } from './doppler'
 import { createObserver, findPasses, getSatellitePosition, refinePassTiming } from './orbit'
@@ -29,24 +30,7 @@ export function predictPasses(
   const allPasses: SatellitePass[] = []
 
   for (const sat of satellites) {
-    // Try multiple name matching strategies for flexibility
-    const tle = tles.find((t) => {
-      const tleName = t.name.toLowerCase().replace(/\s+/g, '')
-      const satName = sat.name.toLowerCase().replace(/\s+/g, '')
-
-      // Direct match (case-insensitive, whitespace-insensitive)
-      if (tleName === satName) return true
-
-      // NORAD ID match (most reliable)
-      const tleNoradMatch = t.line1.match(/^1\s+(\d+)/)
-      if (tleNoradMatch?.[1] && Number.parseInt(tleNoradMatch[1]) === sat.noradId) return true
-
-      // Partial name match (for catalogue name variations such as FUNCUBE-1 vs FUNcube-1 (AO-73))
-      if (tleName.includes(satName.slice(0, 8)) || satName.includes(tleName.slice(0, 8)))
-        return true
-
-      return false
-    })
+    const tle = findTle(tles, sat)
 
     if (!tle) {
       logger.warn(`No TLE found for ${sat.name} (NORAD ${sat.noradId})`)
@@ -142,11 +126,7 @@ export function predictPassesWithDoppler(
   const passes = predictPasses(satellites, tles, station, options)
 
   return passes.map((pass) => {
-    const tle = tles.find(
-      (t) =>
-        t.name.includes(pass.satellite.name) ||
-        t.name.includes(pass.satellite.name.replace(' ', '-'))
-    )
+    const tle = findTle(tles, pass.satellite)
 
     if (!tle) {
       return { pass, positions: [] }

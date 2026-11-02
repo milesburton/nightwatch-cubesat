@@ -5,8 +5,9 @@ import { loadConfig } from '../../config/config'
 import { closeDatabase, initializeDatabase } from '../../db/database'
 import { startWatchdog } from '../../health/watchdog'
 import { filterHighQualityPasses, formatPassesTable, predictPasses } from '../../prediction/passes'
-import { SATELLITES } from '../../satellites/constants'
+import { selectPasses } from '../../prediction/ranking'
 import { isSstvActive, setManualSstvEnabled } from '../../satellites/events'
+import { loadTargets } from '../../satellites/targets'
 import { getTles } from '../../satellites/tle'
 import { runScheduler } from '../../scheduler/scheduler'
 import { stateManager } from '../../state/state-manager'
@@ -87,7 +88,8 @@ export async function runCommand(_args: string[]): Promise<void> {
 
   while (true) {
     try {
-      const activeSatellites = SATELLITES.filter(
+      const targets = await loadTargets(config.database.path)
+      const activeSatellites = targets.filter(
         (sat) => sat.enabled || (sat.eventBased && isSstvActive())
       )
 
@@ -121,14 +123,17 @@ export async function runCommand(_args: string[]): Promise<void> {
         continue
       }
 
-      const passes = filterHighQualityPasses(allPasses, config.recording.minElevation)
+      // One SDR: of any overlapping passes, keep the best-scoring one
+      const passes = selectPasses(filterHighQualityPasses(allPasses, config.recording.minElevation))
       stateManager.updatePasses(passes)
 
       console.log(chalk.bold('\n  Upcoming Passes:\n'))
       console.log(formatPassesTable(passes))
       console.log()
 
-      logger.info(`Found ${passes.length} high-quality passes (${allPasses.length} total)`)
+      logger.info(
+        `Selected ${passes.length} of ${allPasses.length} passes (quality and SDR conflicts)`
+      )
 
       if (passes.length === 0) {
         logger.info('No high-quality passes, checking again in 1 hour...')

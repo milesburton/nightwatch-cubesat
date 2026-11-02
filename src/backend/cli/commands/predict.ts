@@ -1,7 +1,8 @@
 import chalk from 'chalk'
 import { loadConfig } from '../../config/config'
 import { formatPass, formatPassesTable, predictPasses } from '../../prediction/passes'
-import { SATELLITES } from '../../satellites/constants'
+import { rankPasses, selectPasses } from '../../prediction/ranking'
+import { loadTargets } from '../../satellites/targets'
 import { getTles } from '../../satellites/tle'
 import { logger } from '../../utils/logger'
 
@@ -18,21 +19,14 @@ export async function predictCommand(args: string[]): Promise<void> {
   )
   logger.info(`Predicting passes for next ${hoursAhead} hours...`)
 
-  const tles = await getTles(
-    SATELLITES.filter((s) => s.enabled),
-    config.tle.updateIntervalHours
-  )
+  const targets = (await loadTargets(config.database.path)).filter((s) => s.enabled)
+  const tles = await getTles(targets, config.tle.updateIntervalHours)
   logger.info(`Loaded TLEs for ${tles.length} satellites`)
 
-  const passes = predictPasses(
-    SATELLITES.filter((s) => s.enabled),
-    tles,
-    config.station,
-    {
-      minElevation: config.recording.minElevation,
-      hoursAhead,
-    }
-  )
+  const passes = predictPasses(targets, tles, config.station, {
+    minElevation: config.recording.minElevation,
+    hoursAhead,
+  })
 
   if (passes.length === 0) {
     logger.warn(`No passes found above ${config.recording.minElevation}° elevation`)
@@ -47,5 +41,11 @@ export async function predictCommand(args: string[]): Promise<void> {
     console.log(`  ${formatPass(pass)}`)
   }
 
-  console.log(`\n${chalk.gray(`Total: ${passes.length} passes`)}\n`)
+  const plan = new Set(selectPasses(passes))
+  console.log(chalk.bold('\n  Plan for one SDR (best score wins any overlap):\n'))
+  for (const { pass, score } of rankPasses([...plan]).slice(0, 15)) {
+    console.log(`  ${score.toFixed(2)}  ${formatPass(pass)}`)
+  }
+
+  console.log(`\n${chalk.gray(`Total: ${passes.length} passes, ${plan.size} selected`)}\n`)
 }

@@ -187,3 +187,28 @@ describe('TLE fetcher', () => {
     })
   })
 })
+
+describe('findTle', () => {
+  const tle = (name: string, norad: number) => ({
+    name,
+    line1: `1 ${norad}U 23091A   25085.56541919  .00000082  00000+0  69653-4 0  9990`,
+    line2: `2 ${norad}  99.1870 136.4258 0014198 103.3588 256.9118 14.12499278770708`,
+  })
+
+  it('prefers the NORAD id over a similar name', async () => {
+    const { findTle } = await import('@backend/satellites/tle')
+    const decoy = tle('FUNCUBE-2', 11111)
+    const right = tle('AO-73', 39444)
+    expect(findTle([decoy, right], { name: 'FUNcube-1', noradId: 39444 })).toBe(right)
+  })
+
+  it('falls back to the name, then to a partial name', async () => {
+    const { findTle } = await import('@backend/satellites/tle')
+    const byName = tle('FUN CUBE-1', 22222)
+    expect(findTle([byName], { name: 'FunCube-1', noradId: 39444 })).toBe(byName)
+    expect(
+      findTle([tle('FUNCUBE-1 (AO-73)', 22222)], { name: 'FUNcube-1', noradId: 1 })
+    ).toBeDefined()
+    expect(findTle([tle('OTHER', 22222)], { name: 'FUNcube-1', noradId: 1 })).toBeUndefined()
+  })
+})
