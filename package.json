@@ -27,7 +27,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "better-sqlite3": "^11.8.1",
+    "better-sqlite3": "^13.0.3",
     "chalk": "^5.3.0",
     "fft.js": "^4.0.4",
     "ora": "^8.0.1",
