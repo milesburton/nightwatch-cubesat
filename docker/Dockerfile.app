@@ -1,11 +1,11 @@
 # App image - code only, extends base image
 # Builds FAST - just copies source and installs npm packages
 #
-# Build:   docker build -f docker/Dockerfile.app -t ghcr.io/milesburton/night-watch:latest .
+# Build:   docker build -f docker/Dockerfile.app -t ghcr.io/milesburton/nightwatch-cubesat:latest .
 # Or with custom base:
 #          docker build -f docker/Dockerfile.app --build-arg BASE_IMAGE=mybase:tag -t rfcapture:latest .
 
-ARG BASE_IMAGE=ghcr.io/milesburton/night-watch-base:latest
+ARG BASE_IMAGE=ghcr.io/milesburton/nightwatch-cubesat-base:latest
 FROM ${BASE_IMAGE}
 
 WORKDIR /app
@@ -51,8 +51,6 @@ RUN cd src/frontend && npm run build
 ARG GIT_COMMIT=unknown
 ARG BUILD_TIME
 COPY scripts/generate-version.ts ./scripts/
-COPY scripts/lrpt-decode-wrapper.sh ./scripts/
-RUN chmod +x scripts/lrpt-decode-wrapper.sh
 RUN GIT_COMMIT=${GIT_COMMIT} BUILD_TIME=${BUILD_TIME} npx tsx scripts/generate-version.ts
 
 # Default environment variables

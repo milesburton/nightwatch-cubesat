@@ -12,12 +12,12 @@ services:
   # Full mode: Everything on one machine (default)
   # Runs with: docker compose -f docker/compose.yaml up
   rfcapture:
-    image: ghcr.io/milesburton/night-watch:latest
+    image: ghcr.io/milesburton/nightwatch-cubesat:latest
     build:
       context: ..
       dockerfile: docker/Dockerfile.app
       args:
-        BASE_IMAGE: ghcr.io/milesburton/night-watch-base:latest
+        BASE_IMAGE: ghcr.io/milesburton/nightwatch-cubesat-base:latest
         GIT_COMMIT: ${GIT_COMMIT:-unknown}
         BUILD_TIME: ${BUILD_TIME}
     container_name: rfcapture
@@ -60,12 +60,12 @@ services:
 
   # SDR Relay: Lightweight service on Pi with SDR hardware
   sdr-relay:
-    image: ghcr.io/milesburton/night-watch:latest
+    image: ghcr.io/milesburton/nightwatch-cubesat:latest
     build:
       context: ..
       dockerfile: docker/Dockerfile.app
       args:
-        BASE_IMAGE: ghcr.io/milesburton/night-watch-base:latest
+        BASE_IMAGE: ghcr.io/milesburton/nightwatch-cubesat-base:latest
         GIT_COMMIT: ${GIT_COMMIT:-unknown}
         BUILD_TIME: ${BUILD_TIME}
     container_name: sdr-relay
@@ -99,12 +99,12 @@ services:
 
   # Server: API + Frontend + Scheduler (no SDR hardware)
   server:
-    image: ghcr.io/milesburton/night-watch:latest
+    image: ghcr.io/milesburton/nightwatch-cubesat:latest
     build:
       context: ..
       dockerfile: docker/Dockerfile.app
       args:
-        BASE_IMAGE: ghcr.io/milesburton/night-watch-base:latest
+        BASE_IMAGE: ghcr.io/milesburton/nightwatch-cubesat-base:latest
         GIT_COMMIT: ${GIT_COMMIT:-unknown}
         BUILD_TIME: ${BUILD_TIME}
     container_name: rfcapture-server
