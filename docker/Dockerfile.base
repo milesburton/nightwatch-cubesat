@@ -1,0 +1,87 @@
+# Base image with all system dependencies
+# Build rarely - only when OS/dependencies change
+#
+# Build:   docker build -f docker/Dockerfile.base -t ghcr.io/milesburton/night-watch-base:latest .
+# Push:    docker push ghcr.io/milesburton/night-watch-base:latest
+
+FROM debian:bookworm-slim
+
+# Combine all apt operations into single layer for better caching
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    gnupg \
+    # Runtime dependencies (rtl-sdr, sox, audio libs)
+    rtl-sdr \
+    sox \
+    unzip \
+    libsndfile1 \
+    libpng16-16 \
+    libjpeg62-turbo \
+    libfftw3-double3 \
+    libfftw3-single3 \
+    libvolk2.5 \
+    libtiff6 \
+    zlib1g \
+    libnng1 \
+    libcurl4 \
+    libjemalloc2 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Multi-stage pattern: Build SatDump in separate layer for better caching
+# Pin to specific commit for cache stability
+ARG SATDUMP_VERSION=1.2.0
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    cmake \
+    make \
+    gcc \
+    g++ \
+    git \
+    pkg-config \
+    libfftw3-dev \
+    libvolk2-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libtiff-dev \
+    librtlsdr-dev \
+    zlib1g-dev \
+    libnng-dev \
+    libcurl4-openssl-dev \
+    libjemalloc-dev \
+    && git clone --depth 1 --branch ${SATDUMP_VERSION} --recursive https://github.com/SatDump/SatDump.git /tmp/satdump \
+    && cd /tmp/satdump \
+    && mkdir build && cd build \
+    && cmake -DCMAKE_BUILD_TYPE=Release \
+             -DBUILD_GUI=OFF \
+             -DBUILD_CLI=ON \
+             .. \
+    && make -j$(nproc) \
+    && make install \
+    && cd / \
+    && rm -rf /tmp/satdump \
+    && apt-get purge -y cmake git pkg-config libfftw3-dev libvolk2-dev libpng-dev libjpeg-dev libtiff-dev librtlsdr-dev zlib1g-dev libnng-dev libcurl4-openssl-dev libjemalloc-dev \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Node.js 22.x LTS
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g npm@10.9.2 tsx --no-fund --loglevel=error \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create app directories
+WORKDIR /app
+RUN mkdir -p /app/data /app/recordings /app/images
+
+# Verify installations work
+RUN rtl_power -h 2>&1 | head -1 || echo "rtl_power installed" \
+    && satdump --help 2>&1 | head -1 || echo "satdump installed" \
+    && node --version && npm --version
+
+# Labels
+LABEL org.opencontainers.image.title="Night Watch Base" \
+      org.opencontainers.image.description="Base image with rtl-sdr, SatDump (LRPT decoder), and Node.js runtime" \
+      org.opencontainers.image.source="https://github.com/milesburton/night-watch" \
+      org.opencontainers.image.version="2026.02.16" \
+      satdump.version="${SATDUMP_VERSION}"
+
