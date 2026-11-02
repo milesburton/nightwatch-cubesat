@@ -71,7 +71,7 @@ describe('pass prediction', () => {
     it('should match TLE by exact name (case-insensitive)', () => {
       const customSat: SatelliteInfo = {
         ...TEST_SATELLITE,
-        name: 'meteor-m n2-3', // lowercase
+        name: 'funcube-1', // lowercase
       }
 
       const passes = predictPasses([customSat], TEST_TLES, TEST_STATION, {
@@ -85,7 +85,7 @@ describe('pass prediction', () => {
       const customSat: SatelliteInfo = {
         ...TEST_SATELLITE,
         name: 'Different Name', // Wrong name but correct NORAD ID
-        noradId: 57166,
+        noradId: 39444,
       }
 
       const passes = predictPasses([customSat], TEST_TLES, TEST_STATION, {
@@ -113,8 +113,13 @@ describe('pass prediction', () => {
         name: 'UNKNOWN SATELLITE',
         noradId: 99999,
         frequency: 137.5e6,
-        signalType: 'lrpt',
-        signalConfig: { type: 'lrpt', bandwidth: 120000, sampleRate: 1024000, demodulation: 'fm' },
+        signalType: 'telemetry',
+        signalConfig: {
+          type: 'telemetry',
+          bandwidth: 120000,
+          sampleRate: 250000,
+          demodulation: 'fm',
+        },
         enabled: true,
       }
 
@@ -264,7 +269,7 @@ describe('pass prediction', () => {
 
       const formatted = formatPass(mockPass)
 
-      expect(formatted).toContain('METEOR-M N2-3')
+      expect(formatted).toContain('FUNCUBE-1')
       expect(formatted).toContain('15min')
       expect(formatted).toContain('65.5°')
     })
@@ -318,7 +323,7 @@ describe('pass prediction', () => {
       expect(table).toContain('Duration')
       expect(table).toContain('Max Elev')
       expect(table).toContain('Status')
-      expect(table).toContain('METEOR-M N2-3')
+      expect(table).toContain('FUNCUBE-1')
     })
 
     it('should show Pending status for future passes', () => {
@@ -496,8 +501,13 @@ describe('pass prediction', () => {
         name: 'UNKNOWN SATELLITE',
         noradId: 99999,
         frequency: 137.5e6,
-        signalType: 'lrpt',
-        signalConfig: { type: 'lrpt', bandwidth: 120000, sampleRate: 1024000, demodulation: 'fm' },
+        signalType: 'telemetry',
+        signalConfig: {
+          type: 'telemetry',
+          bandwidth: 120000,
+          sampleRate: 250000,
+          demodulation: 'fm',
+        },
         enabled: true,
       }
 
@@ -521,7 +531,7 @@ describe('pass prediction', () => {
     it('should match TLE with space variations in satellite name', () => {
       const customSat: SatelliteInfo = {
         ...TEST_SATELLITE,
-        name: 'METEOR M N2-3', // Space instead of dash
+        name: 'FUNCUBE 1', // Space instead of dash
       }
 
       const predictions = predictPassesWithDoppler([customSat], TEST_TLES, TEST_STATION, {

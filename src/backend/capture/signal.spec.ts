@@ -30,9 +30,9 @@ describe('signal', () => {
   describe('checkSignalStrength', () => {
     it('should return signal strength for valid rtl_power output', async () => {
       const mockOutput = [
-        '2024-01-01, 00:00:00, 137900000, 137950000, 50000, 1, -45.2',
-        '2024-01-01, 00:00:01, 137900000, 137950000, 50000, 1, -42.8',
-        '2024-01-01, 00:00:02, 137900000, 137950000, 50000, 1, -44.5',
+        '2024-01-01, 00:00:00, 145935000, 137950000, 50000, 1, -45.2',
+        '2024-01-01, 00:00:01, 145935000, 137950000, 50000, 1, -42.8',
+        '2024-01-01, 00:00:02, 145935000, 137950000, 50000, 1, -44.5',
       ].join('\n')
 
       vi.mocked(runCommand).mockResolvedValue({
@@ -50,7 +50,7 @@ describe('signal', () => {
 
       expect(vi.mocked(runCommand)).toHaveBeenCalledWith('rtl_power', [
         '-f',
-        '137.9M:138.9M:25000',
+        '145.935M:146.935M:25000',
         '-g',
         '49',
         '-i',
@@ -87,9 +87,9 @@ describe('signal', () => {
 
     it('should handle output with mix of valid and invalid lines', async () => {
       const mockOutput = [
-        '2024-01-01, 00:00:00, 137900000, 137950000, 50000, 1, -40.0',
+        '2024-01-01, 00:00:00, 145935000, 137950000, 50000, 1, -40.0',
         'invalid line',
-        '2024-01-01, 00:00:02, 137900000, 137950000, 50000, 1, -50.0',
+        '2024-01-01, 00:00:02, 145935000, 137950000, 50000, 1, -50.0',
       ].join('\n')
 
       vi.mocked(runCommand).mockResolvedValue({
@@ -106,9 +106,9 @@ describe('signal', () => {
 
     it('should handle NaN and Infinity values in power readings', async () => {
       const mockOutput = [
-        '2024-01-01, 00:00:00, 137900000, 137950000, 50000, 1, NaN',
-        '2024-01-01, 00:00:01, 137900000, 137950000, 50000, 1, Infinity',
-        '2024-01-01, 00:00:02, 137900000, 137950000, 50000, 1, -40.0',
+        '2024-01-01, 00:00:00, 145935000, 137950000, 50000, 1, NaN',
+        '2024-01-01, 00:00:01, 145935000, 137950000, 50000, 1, Infinity',
+        '2024-01-01, 00:00:02, 145935000, 137950000, 50000, 1, -40.0',
       ].join('\n')
 
       vi.mocked(runCommand).mockResolvedValue({
@@ -137,17 +137,17 @@ describe('signal', () => {
       // 2 out of 3 checks pass (strong signal)
       vi.mocked(runCommand)
         .mockResolvedValueOnce({
-          stdout: '2024-01-01, 00:00:00, 137900000, 137950000, 50000, 1, -30.0',
+          stdout: '2024-01-01, 00:00:00, 145935000, 137950000, 50000, 1, -30.0',
           stderr: '',
           exitCode: 0,
         })
         .mockResolvedValueOnce({
-          stdout: '2024-01-01, 00:00:00, 137900000, 137950000, 50000, 1, -70.0',
+          stdout: '2024-01-01, 00:00:00, 145935000, 137950000, 50000, 1, -70.0',
           stderr: '',
           exitCode: 0,
         })
         .mockResolvedValueOnce({
-          stdout: '2024-01-01, 00:00:00, 137900000, 137950000, 50000, 1, -30.0',
+          stdout: '2024-01-01, 00:00:00, 145935000, 137950000, 50000, 1, -30.0',
           stderr: '',
           exitCode: 0,
         })
@@ -162,17 +162,17 @@ describe('signal', () => {
       // Only 1 out of 3 checks pass (weak signal)
       vi.mocked(runCommand)
         .mockResolvedValueOnce({
-          stdout: '2024-01-01, 00:00:00, 137900000, 137950000, 50000, 1, -70.0',
+          stdout: '2024-01-01, 00:00:00, 145935000, 137950000, 50000, 1, -70.0',
           stderr: '',
           exitCode: 0,
         })
         .mockResolvedValueOnce({
-          stdout: '2024-01-01, 00:00:00, 137900000, 137950000, 50000, 1, -30.0',
+          stdout: '2024-01-01, 00:00:00, 145935000, 137950000, 50000, 1, -30.0',
           stderr: '',
           exitCode: 0,
         })
         .mockResolvedValueOnce({
-          stdout: '2024-01-01, 00:00:00, 137900000, 137950000, 50000, 1, -70.0',
+          stdout: '2024-01-01, 00:00:00, 145935000, 137950000, 50000, 1, -70.0',
           stderr: '',
           exitCode: 0,
         })
@@ -184,7 +184,7 @@ describe('signal', () => {
 
     it('should sleep between attempts except after last attempt', async () => {
       vi.mocked(runCommand).mockResolvedValue({
-        stdout: '2024-01-01, 00:00:00, 137900000, 137950000, 50000, 1, -30.0',
+        stdout: '2024-01-01, 00:00:00, 145935000, 137950000, 50000, 1, -30.0',
         stderr: '',
         exitCode: 0,
       })
@@ -198,7 +198,7 @@ describe('signal', () => {
 
     it('should handle custom number of attempts', async () => {
       vi.mocked(runCommand).mockResolvedValue({
-        stdout: '2024-01-01, 00:00:00, 137900000, 137950000, 50000, 1, -30.0',
+        stdout: '2024-01-01, 00:00:00, 145935000, 137950000, 50000, 1, -30.0',
         stderr: '',
         exitCode: 0,
       })
@@ -211,7 +211,7 @@ describe('signal', () => {
 
     it('should handle single attempt', async () => {
       vi.mocked(runCommand).mockResolvedValue({
-        stdout: '2024-01-01, 00:00:00, 137900000, 137950000, 50000, 1, -30.0',
+        stdout: '2024-01-01, 00:00:00, 145935000, 137950000, 50000, 1, -30.0',
         stderr: '',
         exitCode: 0,
       })
@@ -227,22 +227,22 @@ describe('signal', () => {
       // 2 out of 4 checks pass - needs ceiling(4/2) = 2 to pass
       vi.mocked(runCommand)
         .mockResolvedValueOnce({
-          stdout: '2024-01-01, 00:00:00, 137900000, 137950000, 50000, 1, -30.0',
+          stdout: '2024-01-01, 00:00:00, 145935000, 137950000, 50000, 1, -30.0',
           stderr: '',
           exitCode: 0,
         })
         .mockResolvedValueOnce({
-          stdout: '2024-01-01, 00:00:00, 137900000, 137950000, 50000, 1, -30.0',
+          stdout: '2024-01-01, 00:00:00, 145935000, 137950000, 50000, 1, -30.0',
           stderr: '',
           exitCode: 0,
         })
         .mockResolvedValueOnce({
-          stdout: '2024-01-01, 00:00:00, 137900000, 137950000, 50000, 1, -70.0',
+          stdout: '2024-01-01, 00:00:00, 145935000, 137950000, 50000, 1, -70.0',
           stderr: '',
           exitCode: 0,
         })
         .mockResolvedValueOnce({
-          stdout: '2024-01-01, 00:00:00, 137900000, 137950000, 50000, 1, -70.0',
+          stdout: '2024-01-01, 00:00:00, 145935000, 137950000, 50000, 1, -70.0',
           stderr: '',
           exitCode: 0,
         })
@@ -260,12 +260,12 @@ describe('signal', () => {
           exitCode: 1, // Failed scan
         })
         .mockResolvedValueOnce({
-          stdout: '2024-01-01, 00:00:00, 137900000, 137950000, 50000, 1, -30.0',
+          stdout: '2024-01-01, 00:00:00, 145935000, 137950000, 50000, 1, -30.0',
           stderr: '',
           exitCode: 0,
         })
         .mockResolvedValueOnce({
-          stdout: '2024-01-01, 00:00:00, 137900000, 137950000, 50000, 1, -30.0',
+          stdout: '2024-01-01, 00:00:00, 145935000, 137950000, 50000, 1, -30.0',
           stderr: '',
           exitCode: 0,
         })
@@ -367,7 +367,7 @@ describe('signal', () => {
       expect(proc).toBe(mockRunningProcess)
       expect(vi.mocked(spawnProcess)).toHaveBeenCalledWith('rtl_power', [
         '-f',
-        '137.9M:138.9M:25000',
+        '145.935M:146.935M:25000',
         '-g',
         '49',
         '-i',
@@ -399,7 +399,7 @@ describe('signal', () => {
       expect(dataCallback).toBeDefined()
 
       // Simulate receiving data
-      const data1 = Buffer.from('2024-01-01, 00:00:00, 137900000, 137950000, 50000, 1, -45.2\n')
+      const data1 = Buffer.from('2024-01-01, 00:00:00, 145935000, 137950000, 50000, 1, -45.2\n')
       dataCallback(data1)
 
       expect(onReading).toHaveBeenCalledWith(-45.2)
@@ -455,9 +455,9 @@ describe('signal', () => {
       const dataCallback = mockStdout.on.mock.calls.find((call) => call[0] === 'data')?.[1]
 
       const multiLineData = Buffer.from(
-        '2024-01-01, 00:00:00, 137900000, 137950000, 50000, 1, -45.2\n' +
-          '2024-01-01, 00:00:01, 137900000, 137950000, 50000, 1, -42.8\n' +
-          '2024-01-01, 00:00:02, 137900000, 137950000, 50000, 1, -44.5\n'
+        '2024-01-01, 00:00:00, 145935000, 137950000, 50000, 1, -45.2\n' +
+          '2024-01-01, 00:00:01, 145935000, 137950000, 50000, 1, -42.8\n' +
+          '2024-01-01, 00:00:02, 145935000, 137950000, 50000, 1, -44.5\n'
       )
       dataCallback(multiLineData)
 
@@ -489,10 +489,10 @@ describe('signal', () => {
 
       const dataWithInvalid = Buffer.from(
         'invalid line\n' +
-          '2024-01-01, 00:00:00, 137900000, 137950000, 50000, 1, -45.2\n' +
+          '2024-01-01, 00:00:00, 145935000, 137950000, 50000, 1, -45.2\n' +
           'another invalid line\n' +
-          '2024-01-01, 00:00:01, 137900000, 137950000, 50000, 1, NaN\n' +
-          '2024-01-01, 00:00:02, 137900000, 137950000, 50000, 1, -42.8\n'
+          '2024-01-01, 00:00:01, 145935000, 137950000, 50000, 1, NaN\n' +
+          '2024-01-01, 00:00:02, 145935000, 137950000, 50000, 1, -42.8\n'
       )
       dataCallback(dataWithInvalid)
 

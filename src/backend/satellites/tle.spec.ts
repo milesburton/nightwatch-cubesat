@@ -28,8 +28,8 @@ describe('TLE fetcher', () => {
   describe('fetchTle', () => {
     it('should fetch TLE for satellite', async () => {
       const tleResponse = `NOAA 19
-1 57166U 23091A   25085.56541919  .00000082  00000+0  69653-4 0  9990
-2 57166  99.1870 136.4258 0014198 103.3588 256.9118 14.12499278770708`
+1 39444U 23091A   25085.56541919  .00000082  00000+0  69653-4 0  9990
+2 39444  99.1870 136.4258 0014198 103.3588 256.9118 14.12499278770708`
 
       mockFetch.mockImplementation(() =>
         Promise.resolve({
@@ -43,13 +43,13 @@ describe('TLE fetcher', () => {
 
       expect(tle).not.toBeNull()
       expect(tle?.name).toBe('NOAA 19')
-      expect(tle?.line1).toMatch(/^1 57166U/)
-      expect(tle?.line2).toMatch(/^2 57166/)
+      expect(tle?.line1).toMatch(/^1 39444U/)
+      expect(tle?.line2).toMatch(/^2 39444/)
     })
 
     it('should handle two-line format (no name line)', async () => {
-      const tleResponse = `1 57166U 23091A   25085.56541919  .00000082  00000+0  69653-4 0  9990
-2 57166  99.1870 136.4258 0014198 103.3588 256.9118 14.12499278770708`
+      const tleResponse = `1 39444U 23091A   25085.56541919  .00000082  00000+0  69653-4 0  9990
+2 39444  99.1870 136.4258 0014198 103.3588 256.9118 14.12499278770708`
 
       mockFetch.mockImplementation(() =>
         Promise.resolve({

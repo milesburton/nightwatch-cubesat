@@ -1,30 +1,30 @@
-import { CELESTRAK_GP_API, PASS_CONSTRAINTS, SATELLITES } from '@backend/satellites/constants'
+import {
+  CELESTRAK_GP_API,
+  PASS_CONSTRAINTS,
+  SATELLITES,
+  SIGNAL_CONFIGS,
+} from '@backend/satellites/constants'
 import type { SatelliteInfo } from '@backend/types'
 import { describe, expect, it } from 'vitest'
 
 describe('satellite constants', () => {
-  it('should have METEOR-M and ISS satellites defined', () => {
-    expect(SATELLITES).toHaveLength(3)
+  it('should define only the ISS as a built-in satellite', () => {
+    expect(SATELLITES.map((s: SatelliteInfo) => s.name)).toEqual(['ISS'])
   })
 
-  it('should have correct METEOR-M satellite frequencies', () => {
-    const meteorN23 = SATELLITES.find((s: SatelliteInfo) => s.name === 'METEOR-M N2-3')
-    const meteorN24 = SATELLITES.find((s: SatelliteInfo) => s.name === 'METEOR-M N2-4')
+  it('should have the correct ISS frequency and NORAD ID', () => {
     const iss = SATELLITES.find((s: SatelliteInfo) => s.name === 'ISS')
 
-    expect(meteorN23?.frequency).toBe(137.9e6)
-    expect(meteorN24?.frequency).toBe(137.9e6)
     expect(iss?.frequency).toBe(145.8e6)
+    expect(iss?.noradId).toBe(25544)
   })
 
-  it('should have correct NORAD IDs', () => {
-    const meteorN23 = SATELLITES.find((s: SatelliteInfo) => s.name === 'METEOR-M N2-3')
-    const meteorN24 = SATELLITES.find((s: SatelliteInfo) => s.name === 'METEOR-M N2-4')
-    const iss = SATELLITES.find((s: SatelliteInfo) => s.name === 'ISS')
-
-    expect(meteorN23?.noradId).toBe(57166)
-    expect(meteorN24?.noradId).toBe(59051)
-    expect(iss?.noradId).toBe(25544)
+  it('should configure telemetry as 250 kS/s baseband IQ', () => {
+    expect(SIGNAL_CONFIGS.telemetry).toMatchObject({
+      type: 'telemetry',
+      sampleRate: 250000,
+      demodulation: 'baseband',
+    })
   })
 
   it('should have valid CelesTrak API URL', () => {

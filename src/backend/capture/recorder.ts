@@ -56,7 +56,7 @@ export async function startRecording(
 
   // Use signal-specific sample rate if defined, else fall back to global SDR rate
   const sampleRate = isBaseband
-    ? (satellite.signalConfig?.sampleRate ?? 1_024_000)
+    ? (satellite.signalConfig?.sampleRate ?? 250_000)
     : isSstv
       ? SSTV_SAMPLE_RATE
       : config.sdr.sampleRate
@@ -69,7 +69,7 @@ export async function startRecording(
   let soxProcess: ChildProcess
 
   if (isBaseband) {
-    // LRPT: raw IQ baseband via rtl_sdr — SatDump expects s16 IQ at 1024000 Hz
+    // Telemetry: raw IQ baseband via rtl_sdr, as s16 IQ for gr-satellites
     const rtlArgs = [
       '-f',
       freqHz,
@@ -84,7 +84,7 @@ export async function startRecording(
     logger.debug(`rtl_sdr args: ${rtlArgs.join(' ')}`)
     rtlProcess = spawn('rtl_sdr', rtlArgs, { stdio: ['pipe', 'pipe', 'pipe'] })
 
-    // rtl_sdr outputs u8 IQ; sox converts to s16 WAV for SatDump
+    // rtl_sdr outputs u8 IQ; sox converts to s16 WAV for the decoder
     soxProcess = spawn(
       'sox',
       [

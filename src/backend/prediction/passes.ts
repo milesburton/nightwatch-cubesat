@@ -41,7 +41,7 @@ export function predictPasses(
       const tleNoradMatch = t.line1.match(/^1\s+(\d+)/)
       if (tleNoradMatch?.[1] && Number.parseInt(tleNoradMatch[1]) === sat.noradId) return true
 
-      // Partial name match (for METEOR-M2 vs METEOR-M N2 variations)
+      // Partial name match (for catalogue name variations such as FUNCUBE-1 vs FUNcube-1 (AO-73))
       if (tleName.includes(satName.slice(0, 8)) || satName.includes(tleName.slice(0, 8)))
         return true
 

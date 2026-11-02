@@ -26,7 +26,7 @@ export class CaptureDatabase {
         satellite_name TEXT NOT NULL,
         satellite_norad_id INTEGER NOT NULL,
         frequency INTEGER NOT NULL,
-        signal_type TEXT NOT NULL DEFAULT 'lrpt',
+        signal_type TEXT NOT NULL DEFAULT 'telemetry',
         aos_time TEXT NOT NULL,
         los_time TEXT NOT NULL,
         max_elevation REAL NOT NULL,
@@ -69,7 +69,7 @@ export class CaptureDatabase {
     const columns = this.db.prepare('PRAGMA table_info(captures)').all() as { name: string }[]
     const hasSignalType = columns.some((c) => c.name === 'signal_type')
     if (!hasSignalType) {
-      this.db.exec(`ALTER TABLE captures ADD COLUMN signal_type TEXT NOT NULL DEFAULT 'lrpt'`)
+      this.db.exec(`ALTER TABLE captures ADD COLUMN signal_type TEXT NOT NULL DEFAULT 'telemetry'`)
     }
   }
 
@@ -161,7 +161,7 @@ export class CaptureDatabase {
       satelliteName: row.satellite_name,
       satelliteNoradId: row.satellite_norad_id,
       frequency: row.frequency,
-      signalType: (row.signal_type || 'lrpt') as SignalType,
+      signalType: (row.signal_type || 'telemetry') as SignalType,
       aosTime: row.aos_time,
       losTime: row.los_time,
       maxElevation: row.max_elevation,

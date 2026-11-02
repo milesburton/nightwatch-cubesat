@@ -84,7 +84,7 @@ describe('scheduler', () => {
       station: TEST_STATION,
       sdr: {
         gain: 49,
-        sampleRate: 1024000,
+        sampleRate: 250000,
         ppmCorrection: 0,
       },
       recording: {

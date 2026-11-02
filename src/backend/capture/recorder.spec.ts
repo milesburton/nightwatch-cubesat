@@ -37,7 +37,7 @@ vi.mock('../utils/fs', () => ({
   readTextFile: vi.fn(() => Promise.resolve('')),
   writeTextFile: vi.fn(() => Promise.resolve()),
   formatBytes: vi.fn((bytes: number) => `${bytes} B`),
-  generateFilename: vi.fn(() => 'METEOR-M-N2-3_2025-01-01T12-00-00.wav'),
+  generateFilename: vi.fn(() => 'FUNCUBE-1_2025-01-01T12-00-00.wav'),
 }))
 
 vi.mock('../utils/shell', () => ({
@@ -93,23 +93,23 @@ describe('recorder', () => {
     it('should generate filename based on satellite name', async () => {
       await startRecording(TEST_SATELLITE, mockConfig)
 
-      expect(generateFilename).toHaveBeenCalledWith('METEOR-M N2-3', 'wav')
+      expect(generateFilename).toHaveBeenCalledWith('FUNCUBE-1', 'wav')
     })
 
-    it('should spawn rtl_sdr (not rtl_fm) for LRPT baseband satellite', async () => {
+    it('should spawn rtl_sdr (not rtl_fm) for telemetry baseband satellite', async () => {
       await startRecording(TEST_SATELLITE, mockConfig)
 
       expect(spawn).toHaveBeenCalledWith(
         'rtl_sdr',
-        expect.arrayContaining(['-f', '137900000', '-s', '1024000', '-g', '40', '-p', '0', '-']),
+        expect.arrayContaining(['-f', '145935000', '-s', '250000', '-g', '40', '-p', '0', '-']),
         expect.any(Object)
       )
-      // Must NOT use rtl_fm for LRPT
+      // Must NOT use rtl_fm for telemetry
       const spawnCalls = vi.mocked(spawn).mock.calls.map((c) => c[0])
       expect(spawnCalls).not.toContain('rtl_fm')
     })
 
-    it('should spawn sox with u8 IQ input and s16 WAV output for LRPT', async () => {
+    it('should spawn sox with u8 IQ input and s16 WAV output for telemetry', async () => {
       await startRecording(TEST_SATELLITE, mockConfig)
 
       expect(spawn).toHaveBeenCalledWith(
@@ -130,11 +130,11 @@ describe('recorder', () => {
       )
     })
 
-    it('should use signal sampleRate (1024000) for LRPT, not global config sampleRate (48000)', async () => {
+    it('should use signal sampleRate (250000) for telemetry, not global config sampleRate (48000)', async () => {
       await startRecording(TEST_SATELLITE, mockConfig)
 
       const rtlSdrCall = vi.mocked(spawn).mock.calls.find((c) => c[0] === 'rtl_sdr')
-      expect(rtlSdrCall?.[1]).toContain('1024000')
+      expect(rtlSdrCall?.[1]).toContain('250000')
       expect(rtlSdrCall?.[1]).not.toContain('48000')
     })
 
@@ -154,7 +154,7 @@ describe('recorder', () => {
       const session = await startRecording(TEST_SATELLITE, mockConfig)
 
       expect(session.satellite).toEqual(TEST_SATELLITE)
-      expect(session.outputPath).toBe('/recordings/METEOR-M-N2-3_2025-01-01T12-00-00.wav')
+      expect(session.outputPath).toBe('/recordings/FUNCUBE-1_2025-01-01T12-00-00.wav')
       expect(session.startTime).toBeInstanceOf(Date)
       expect(typeof session.stop).toBe('function')
     })

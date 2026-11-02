@@ -24,12 +24,11 @@ export function PassTimeline({ passes, hoursAhead = 12 }: PassTimelineProps) {
       return num ? `N${num}` : 'N??'
     }
     if (name === 'ISS') return 'ISS'
-    if (name.includes('METEOR')) return 'MET'
     return name.substring(0, 3).toUpperCase()
   }
 
   const getSatIcon = (name: string): string => {
-    if (name.includes('NOAA') || name.includes('METEOR')) return '🛰'
+    if (name.includes('NOAA')) return '🛰'
     if (name === 'ISS') return '🚀'
     return '📡'
   }

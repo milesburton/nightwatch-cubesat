@@ -7,10 +7,11 @@ export const SIGNAL_CONFIGS: Record<SignalType, SignalConfig> = {
     sampleRate: 48000,
     demodulation: 'fm' as DemodulationType,
   },
-  lrpt: {
-    type: 'lrpt' as const,
-    bandwidth: 120000,
-    sampleRate: 1024000,
+  // Raw IQ for gr-satellites; 250 kS/s covers BPSK 1k2 through GMSK 19k2 with Doppler margin
+  telemetry: {
+    type: 'telemetry' as const,
+    bandwidth: 30000,
+    sampleRate: 250000,
     demodulation: 'baseband' as DemodulationType,
   },
 }
@@ -25,26 +26,7 @@ export const SATELLITES: SatelliteInfo[] = [
     enabled: false,
     eventBased: true,
   },
-  {
-    name: 'METEOR-M N2-3',
-    noradId: 57166,
-    frequency: 137.9e6,
-    signalType: 'lrpt',
-    signalConfig: SIGNAL_CONFIGS.lrpt,
-    enabled: true,
-  },
-  {
-    name: 'METEOR-M N2-4',
-    noradId: 59051,
-    frequency: 137.9e6,
-    signalType: 'lrpt',
-    signalConfig: SIGNAL_CONFIGS.lrpt,
-    enabled: true,
-  },
 ]
-
-// All LRPT weather satellites
-export const WEATHER_SATELLITES = SATELLITES.filter((s) => s.signalType === 'lrpt')
 
 export const CELESTRAK_GP_API = 'https://celestrak.org/NORAD/elements/gp.php'
 

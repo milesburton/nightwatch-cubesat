@@ -3,9 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('@backend/prediction/ground-track', () => ({
   computeGroundTrack: vi.fn(() => ({
-    noradId: 57166,
+    noradId: 39444,
     name: 'NOAA 19',
-    signalType: 'lrpt',
+    signalType: 'telemetry',
     points: [{ lat: 45, lng: -120 }],
   })),
 }))
@@ -16,8 +16,8 @@ vi.mock('@backend/prediction/orbit', () => ({
     longitude: -120.5,
     altitude: 850,
     name: 'NOAA 19',
-    noradId: 57166,
-    signalType: 'lrpt',
+    noradId: 39444,
+    signalType: 'telemetry',
   })),
 }))
 
@@ -25,9 +25,9 @@ vi.mock('@backend/satellites/constants', () => ({
   SATELLITES: [
     {
       name: 'NOAA 19',
-      noradId: 57166,
+      noradId: 39444,
       frequency: 137.1e6,
-      signalType: 'lrpt',
+      signalType: 'telemetry',
       enabled: true,
     },
   ],
@@ -38,8 +38,8 @@ vi.mock('@backend/satellites/tle', () => ({
     Promise.resolve([
       {
         name: 'NOAA 19',
-        line1: '1 57166U 23091A   25085.56541919  .00000082  00000+0  69653-4 0  9990',
-        line2: '2 57166  99.1870 136.4258 0014198 103.3588 256.9118 14.12499278770708',
+        line1: '1 39444U 23091A   25085.56541919  .00000082  00000+0  69653-4 0  9990',
+        line2: '2 39444  99.1870 136.4258 0014198 103.3588 256.9118 14.12499278770708',
       },
     ])
   ),

@@ -4,7 +4,7 @@ export interface Coordinates {
   altitude: number
 }
 
-export type SignalType = 'sstv' | 'lrpt'
+export type SignalType = 'sstv' | 'telemetry'
 
 export type DemodulationType = 'fm' | 'am' | 'ssb' | 'baseband'
 

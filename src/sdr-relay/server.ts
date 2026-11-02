@@ -234,9 +234,9 @@ export function startSDRRelayServer(port: number, host: string): Server {
             name: startRequest.satelliteName || 'Unknown',
             noradId: 0,
             frequency: startRequest.frequency,
-            signalType: 'lrpt' as const,
+            signalType: 'telemetry' as const,
             signalConfig: {
-              type: 'lrpt' as const,
+              type: 'telemetry' as const,
               bandwidth: 120000,
               sampleRate: startRequest.sampleRate,
               demodulation: 'fm' as const,

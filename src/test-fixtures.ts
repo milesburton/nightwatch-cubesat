@@ -7,17 +7,22 @@ export const TEST_STATION: Coordinates = {
 }
 
 export const TEST_TLE: TwoLineElement = {
-  name: 'METEOR-M N2-3',
-  line1: '1 57166U 23091A   25085.56541919  .00000082  00000+0  69653-4 0  9990',
-  line2: '2 57166  99.1870 136.4258 0014198 103.3588 256.9118 14.12499278770708',
+  name: 'FUNCUBE-1',
+  line1: '1 39444U 23091A   25085.56541919  .00000082  00000+0  69653-4 0  9990',
+  line2: '2 39444  99.1870 136.4258 0014198 103.3588 256.9118 14.12499278770708',
 }
 
 export const TEST_SATELLITE: SatelliteInfo = {
-  name: 'METEOR-M N2-3',
-  noradId: 57166,
-  frequency: 137.9e6,
-  signalType: 'lrpt',
-  signalConfig: { type: 'lrpt', bandwidth: 120000, sampleRate: 1024000, demodulation: 'baseband' },
+  name: 'FUNCUBE-1',
+  noradId: 39444,
+  frequency: 145.935e6,
+  signalType: 'telemetry',
+  signalConfig: {
+    type: 'telemetry',
+    bandwidth: 120000,
+    sampleRate: 250000,
+    demodulation: 'baseband',
+  },
   enabled: true,
 }
 
