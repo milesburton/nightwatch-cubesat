@@ -20,6 +20,7 @@
     "predict": "tsx src/backend/cli/main.ts predict",
     "status": "tsx src/backend/cli/main.ts status",
     "version:generate": "tsx scripts/generate-version.ts",
+    "candidates": "tsx src/backend/cli/commands/candidates.ts",
     "maintenance:decode": "tsx src/backend/cli/commands/maintenance.ts --decode",
     "maintenance:cleanup": "tsx src/backend/cli/commands/maintenance.ts --cleanup",
     "maintenance:all": "tsx src/backend/cli/commands/maintenance.ts --all",

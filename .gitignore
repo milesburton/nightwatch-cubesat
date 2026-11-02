@@ -53,3 +53,4 @@ test-files/
 *.wav
 scripts/deploy/
 GITHUB_PROFILE_README.md
+tmp/
