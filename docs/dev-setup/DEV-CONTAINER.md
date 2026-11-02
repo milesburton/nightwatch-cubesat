@@ -1,6 +1,6 @@
 # VS Code Dev Container Setup
 
-Night Watch includes a VS Code dev container for consistent development environments across machines.
+Nightwatch Cubesat includes a VS Code dev container for consistent development environments across machines.
 
 ## What's Included
 

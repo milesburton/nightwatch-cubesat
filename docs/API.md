@@ -1,4 +1,4 @@
-# Night Watch API
+# Nightwatch Cubesat API
 
 Base URL: `http://<host>:<port>`
 
@@ -84,7 +84,7 @@ Connect: `ws://<host>:<port>/ws`
 ### SatellitePass
 ```json
 {
-  "satellite": { "name": "NOAA-19", "frequency": 137100000, "signalType": "apt" },
+  "satellite": { "name": "FUNcube-1", "frequency": 145935000, "signalType": "telemetry" },
   "aos": "2024-01-15T10:30:00Z",
   "los": "2024-01-15T10:45:00Z",
   "maxElevation": 45.2,
@@ -96,7 +96,7 @@ Connect: `ws://<host>:<port>/ws`
 ```json
 {
   "timestamp": 1705312200000,
-  "centerFreq": 137500000,
+  "centerFreq": 145935000,
   "bins": [-50.2, -48.1, ...],
   "minPower": -60.5,
   "maxPower": -35.2

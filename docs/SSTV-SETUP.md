@@ -1,6 +1,6 @@
 # SSTV Decoder Setup
 
-Night Watch uses the [colaclanth/sstv](https://github.com/colaclanth/sstv) Python decoder for ISS and 2m amateur SSTV transmissions.
+Nightwatch Cubesat uses the [colaclanth/sstv](https://github.com/colaclanth/sstv) Python decoder for ISS and 2m amateur SSTV transmissions.
 
 ## Overview
 
@@ -26,11 +26,11 @@ If that fails, rebuild the base image:
 
 ```bash
 # Option 1: Pull pre-built image (recommended)
-docker pull ghcr.io/milesburton/night-watch-base:latest
+docker pull ghcr.io/milesburton/nightwatch-cubesat-base:latest
 docker compose -f docker/compose.yaml up -d --force-recreate
 
 # Option 2: Build locally on x86_64 (takes 15-30 min)
-docker build -f docker/Dockerfile.base -t night-watch-base:latest .
+docker build -f docker/Dockerfile.base -t nightwatch-cubesat-base:latest .
 docker compose -f docker/compose.yaml build --no-cache
 docker compose -f docker/compose.yaml up -d --force-recreate
 ```

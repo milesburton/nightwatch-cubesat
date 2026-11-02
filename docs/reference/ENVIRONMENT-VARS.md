@@ -1,6 +1,6 @@
 # Environment Variables Reference
 
-All Night Watch configuration is controlled via environment variables in `.env`.
+All Nightwatch Cubesat configuration is controlled via environment variables in `.env`.
 
 Start with `.env.example` as a template:
 ```bash
@@ -33,7 +33,7 @@ These affect satellite pass predictions and Doppler shift calculations. Accuracy
 docker exec rfcapture rtl_test -p
 
 # Test gain levels with a known satellite
-docker exec rfcapture rtl_fm -f 137900000 -M ssb | sox -t raw -r 48k -b 16 -c 1 -e signed-integer - -n stat
+docker exec rfcapture rtl_fm -f 145935000 -M ssb | sox -t raw -r 48k -b 16 -c 1 -e signed-integer - -n stat
 ```
 
 ## Capture Settings
@@ -71,6 +71,14 @@ The web dashboard is exposed via Docker on the port you specify in `docker/compo
 | `TLE_UPDATE_INTERVAL_HOURS` | int | `24` | How often to fetch fresh TLE data (hours) |
 
 TLE (Two-Line Element) data defines satellite orbits. Updates every 24h is typical; more frequent isn't helpful.
+
+## SatNOGS Candidates
+
+| Variable | Type | Default | Description |
+|----------|------|---------|-------------|
+| `SATNOGS_API_TOKEN` | string | - | Optional free db.satnogs.org API token for `npm run candidates sync`. Keep it in `.env` only, never commit it. |
+
+See [SCHEDULING.md](../SCHEDULING.md) for how candidates become capture targets.
 
 ## Service Mode
 
@@ -145,7 +153,7 @@ These are used by deployment scripts (in `scripts/deploy/`), not by the applicat
 | Variable | Type | Example | Description |
 |----------|------|---------|-------------|
 | `DEPLOY_TARGET` | string | `miles@raspberry-pi` | SSH target for deployment |
-| `DEPLOY_DIR` | string | `noaa-satellite-capture` | Directory on target system |
+| `DEPLOY_DIR` | string | `nightwatch-cubesat` | Directory on target system |
 | `DEPLOY_PORT` | int | `80` | External port (maps to WEB_PORT) |
 
 ```bash
